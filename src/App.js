@@ -1,10 +1,11 @@
-import ThemeSelector from "./ThemeSelector";
 import React, { useState } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph, TextRun } from "docx";
+import ThemeSelector from "./ThemeSelector";
+import GraphesStatistiques from "./GraphesStatistiques";
 import "./App.css";
 
 const Notification = ({ message, type }) => {
@@ -23,6 +24,10 @@ function App() {
   const [notification, setNotification] = useState("");
   const [notificationType, setNotificationType] = useState("success");
   const [historique, setHistorique] = useState([]);
+
+  // Pour les graphes :
+  const [selectedGraphs, setSelectedGraphs] = useState([]);
+  const [showGraphs, setShowGraphs] = useState(false);
 
   const afficherNotification = (message, type = "success") => {
     setNotification(message);
@@ -222,35 +227,46 @@ function App() {
         )}
       </div>
 
+      {/* Sélection des graphes */}
+      <div className="mt-6">
+        <label className="font-semibold mb-2 block">📌 Sélectionner les graphes à visualiser :</label>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+          {["Histogramme", "Courbe de tendance", "Boxplot", "Linéaire"].map(type => (
+            <label key={type} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={selectedGraphs.includes(type)}
+                onChange={() =>
+                  setSelectedGraphs(prev =>
+                    prev.includes(type)
+                      ? prev.filter(t => t !== type)
+                      : [...prev, type]
+                  )
+                }
+              />
+              <span>{type}</span>
+            </label>
+          ))}
+        </div>
+        <button
+          onClick={() => setShowGraphs(true)}
+          className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-xl shadow-md hover:scale-105 transform transition text-lg font-semibold"
+        >
+          🎨 Visualiser les Graphes
+        </button>
+      </div>
+
       {result && (
         <div className="mt-6 p-6 bg-gray-100 rounded-md shadow-md">
           <h2 className="text-lg font-semibold">📌 Résultats :</h2>
-          <p><strong>📌 Moyenne :</strong> {result.moyenne?.toFixed(2)}</p>
-          <p><strong>📌 Médiane :</strong> {result.mediane?.toFixed(2)}</p>
-          <p><strong>📌 Mode :</strong> {Array.isArray(result.mode) ? result.mode.join(", ") : "Aucun mode"}</p>
-          <p><strong>📉 Variance :</strong> {result.variance?.toFixed(2)}</p>
-          <p><strong>📉 Écart-type :</strong> {result.ecart_type?.toFixed(2)}</p>
-          <p><strong>📉 Skewness :</strong> {result.skewness?.toFixed(2)}</p>
-          <p><strong>📉 Kurtosis :</strong> {result.kurtosis?.toFixed(2)}</p>
-          <p><strong>🔹 Q1 :</strong> {result.quartiles?.Q1?.toFixed(2)}</p>
-          <p><strong>🔹 Q2 (Médiane) :</strong> {result.mediane?.toFixed(2)}</p>
-          <p><strong>🔹 Q3 :</strong> {result.quartiles?.Q3?.toFixed(2)}</p>
-          <p><strong>🔹 IQR :</strong> {result.iqr?.toFixed(2)}</p>
-          {result.valeurs_aberrantes && result.valeurs_aberrantes.length > 0 ? (
-            <div>
-              <p><strong>🚨 Valeurs aberrantes :</strong></p>
-              <ul className="list-disc ml-6">
-                {result.valeurs_aberrantes.map((val, idx) => (
-                  <li key={idx}>{val}</li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p><strong>🚨 Valeurs aberrantes :</strong> Aucune</p>
+          {/* Affichage des résultats ici... */}
+          {/* ... */}
+          {showGraphs && (
+            <GraphesStatistiques
+              data={{ ...result, valeurs: inputData.split(",").map(Number) }}
+              selectedGraphs={selectedGraphs}
+            />
           )}
-          <p><strong>🔸 Min :</strong> {result.min}</p>
-          <p><strong>🔸 Max :</strong> {result.max}</p>
-          <p><strong>🔸 Amplitude :</strong> {result.amplitude}</p>
 
           {/* Exporter les résultats */}
           <div className="mt-4 flex flex-col items-start">
@@ -271,6 +287,7 @@ function App() {
         </div>
       )}
 
+      {/* Historique */}
       {historique.length > 0 && (
         <div className="mt-6 p-6 bg-gray-50 rounded-md shadow-md">
           <h2 className="text-lg font-semibold">🕒 Historique des Calculs :</h2>
@@ -286,6 +303,7 @@ function App() {
         </div>
       )}
 
+      {/* Erreur */}
       {error && (
         <div className="mt-4 p-4 bg-red-100 text-red-600 rounded-md shadow-sm">
           <h2 className="font-bold">❌ Erreur :</h2>

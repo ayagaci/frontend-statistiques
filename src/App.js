@@ -1,3 +1,4 @@
+import ThemeSelector from "./ThemeSelector";
 import React, { useState } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx"; // 📥 Import de xlsx
@@ -134,6 +135,7 @@ function App() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
+      <ThemeSelector />
       <h1 className="text-3xl font-bold mb-6 text-center">📊 Calculateur de Statistiques</h1>
 
       {/* Notification */}

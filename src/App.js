@@ -260,7 +260,23 @@ function App() {
       {result && (
         <div className="mt-6 p-6 bg-gray-100 rounded-md shadow-md">
           <h2 className="text-lg font-semibold">📌 Résultats :</h2>
-          {/* Affichage des résultats ici... */}
+          <ul className="mt-4 space-y-2">
+            <li>📈 <strong>Moyenne :</strong> {result.moyenne?.toFixed(2)}</li>
+            <li>🎯 <strong>Médiane :</strong> {result.mediane?.toFixed(2)}</li>
+            <li>🔁 <strong>Mode :</strong> {Array.isArray(result.mode) ? result.mode.join(", ") : "Aucun"}</li>
+            <li>🔺 <strong>Variance :</strong> {result.variance?.toFixed(2)}</li>
+            <li>📉 <strong>Écart-type :</strong> {result.ecart_type?.toFixed(2)}</li>
+            <li>📊 <strong>Skewness :</strong> {result.skewness?.toFixed(2)}</li>
+            <li>🌀 <strong>Kurtosis :</strong> {result.kurtosis?.toFixed(2)}</li>
+            <li>📍 <strong>Q1 :</strong> {result.quartiles?.Q1?.toFixed(2)}</li>
+            <li>📍 <strong>Q2 :</strong> {result.mediane?.toFixed(2)}</li>
+            <li>📍 <strong>Q3 :</strong> {result.quartiles?.Q3?.toFixed(2)}</li>
+            <li>📦 <strong>IQR :</strong> {result.iqr?.toFixed(2)}</li>
+            <li>🚨 <strong>Valeurs aberrantes :</strong> {result.valeurs_aberrantes?.length > 0 ? result.valeurs_aberrantes.join(", ") : "Aucune"}</li>
+            <li>🔽 <strong>Min :</strong> {result.min}</li>
+            <li>🔼 <strong>Max :</strong> {result.max}</li>
+            <li>📏 <strong>Amplitude :</strong> {result.amplitude}</li>
+          </ul>
           {/* ... */}
           {showGraphs && (
             <GraphesStatistiques
@@ -293,16 +309,31 @@ function App() {
         <div className="mt-6 p-6 bg-gray-50 rounded-md shadow-md">
           <h2 className="text-lg font-semibold">🕒 Historique des Calculs :</h2>
           {historique.map((entry, index) => (
-            <p key={index} className="text-sm mt-1">
-              📊 Série : <strong>{entry.saisie}</strong> →
-              Moyenne : <strong>{entry.moyenne?.toFixed(2)}</strong>,
-              Médiane : <strong>{entry.mediane?.toFixed(2)}</strong>,
-              Min : <strong>{entry.min}</strong>,
-              Max : <strong>{entry.max}</strong>
-            </p>
-          ))}
-        </div>
-      )}
+           <div key={index} className="mt-4 border-t pt-4 text-sm">
+             <p className="font-bold">
+               📊 Série #{historique.length - index} : <span className="font-normal">{entry.saisie}</span>
+              </p>
+              <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                <li>📈 Moyenne : <strong>{entry.moyenne?.toFixed(2)}</strong></li>
+                <li>🎯 Médiane : <strong>{entry.mediane?.toFixed(2)}</strong></li>
+                <li>🔁 Mode : <strong>{Array.isArray(entry.mode) ? entry.mode.join(", ") : "Aucun"}</strong></li>
+                <li>🔺 Variance : <strong>{entry.variance?.toFixed(2)}</strong></li>
+                <li>📉 Écart-type : <strong>{entry.ecart_type?.toFixed(2)}</strong></li>
+                <li>📊 Skewness : <strong>{entry.skewness?.toFixed(2)}</strong></li>
+                <li>🌀 Kurtosis : <strong>{entry.kurtosis?.toFixed(2)}</strong></li>
+                <li>📍 Q1 : <strong>{entry.quartiles?.Q1?.toFixed(2)}</strong></li>
+                <li>📍 Q2 : <strong>{entry.mediane?.toFixed(2)}</strong></li>
+                <li>📍 Q3 : <strong>{entry.quartiles?.Q3?.toFixed(2)}</strong></li>
+                <li>📦 IQR : <strong>{entry.iqr?.toFixed(2)}</strong></li>
+                <li>🚨 Valeurs aberrantes : <strong>{entry.valeurs_aberrantes?.length > 0 ? entry.valeurs_aberrantes.join(", ") : "Aucune"}</strong></li>
+                <li>🔽 Min : <strong>{entry.min}</strong></li>
+                <li>🔼 Max : <strong>{entry.max}</strong></li>
+                <li>📏 Amplitude : <strong>{entry.amplitude}</strong></li>
+              </ul>
+          </div>
+         ))}
+      </div> // ✅ Fermeture correcte ICI du bloc Historique
+    )}
 
       {/* Erreur */}
       {error && (
